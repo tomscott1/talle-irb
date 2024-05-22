@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+datasource db {
+  provider = "postgresql"
+  // Uses connection pooling
+  url = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+ 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  image     String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Carnival {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startDate DateTime   
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  races     Race[]
+}
+
+model CrewMember {
+  id        Int      @id @default(autoincrement())
+  name      String
+  isDriver  Boolean
+  photo     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  crewAssignments RaceCrewAssignment[]
+}
+
+enum Round {
+    ROUND1
+    ROUND2
+    QUARTERFINAL
+    SEMIFINAL
+    FINAL
+}
+
+enum CrewRole {
+  DRIVER
+  CREWIE
+  PATIENT
+}
+
+model Race {
+  id         Int      @id @default(autoincrement())
+  carnivalId Int
+  carnival   Carnival @relation(fields: [carnivalId], references: [id])
+  description String
+  order      Int
+  goThrough  Int
+  numRaces   Int
+  round      Round
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  crewAssignments RaceCrewAssignment[]
+}
+
+model RaceCrewAssignment {
+  id         Int        @id @default(autoincrement())
+  raceId     Int
+  race       Race       @relation(fields: [raceId], references: [id])
+  crewMemberId Int
+  crewMember CrewMember @relation(fields: [crewMemberId], references: [id])
+  role       CrewRole
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
+
+  @@unique([raceId, crewMemberId, role]) // Ensures a crew member can only have one role per race
+}
