@@ -11,10 +11,28 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+// Define Enums
+
 enum Role {
   USER
   ADMIN
 }
+
+enum Round {
+  ROUND1
+  ROUND2
+  QUARTERFINAL
+  SEMIFINAL
+  FINAL
+}
+
+enum CrewRole {
+  DRIVER
+  CREWIE
+  PATIENT
+}
+
+// Define Models
  
 model User {
   id        Int      @id @default(autoincrement())
@@ -46,20 +64,6 @@ model CrewMember {
   crewAssignments RaceCrewAssignment[]
 }
 
-enum Round {
-    ROUND1
-    ROUND2
-    QUARTERFINAL
-    SEMIFINAL
-    FINAL
-}
-
-enum CrewRole {
-  DRIVER
-  CREWIE
-  PATIENT
-}
-
 model Race {
   id         Int      @id @default(autoincrement())
   carnivalId Int
@@ -69,6 +73,7 @@ model Race {
   goThrough  Int
   numRaces   Int
   round      Round
+  isCompleted Boolean
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
   crewAssignments RaceCrewAssignment[]
