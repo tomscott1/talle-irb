@@ -10,8 +10,11 @@ const Navbar: React.FC = () => {
                 Talle IRB Racing Team
             </div>
             <div className="flex items-center mr-4 space-x-4">
-                <Link href="/carnivals" className="text-blue-500 hover:underline">
+                <Link href="/carnivals" className="hover:underline">
                     Carnivals
+                </Link>
+                <Link href="/crew-assign" className="hover:underline">
+                    Assign Crew
                 </Link>
                 <ModeToggle />
             </div>

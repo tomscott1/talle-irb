@@ -32,6 +32,12 @@ enum CrewRole {
   PATIENT
 }
 
+enum RaceTeam {
+  A
+  B
+  C
+}
+
 // Define Models
  
 model User {
@@ -88,6 +94,7 @@ model RaceCrewAssignment {
   crewMember CrewMember @relation(fields: [crewMemberId], references: [id])
   role       CrewRole
   heat       Int        @default(1)
+  raceTeam   RaceTeam   @default(A)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now())
 
