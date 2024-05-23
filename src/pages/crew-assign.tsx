@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import Link from 'next/link';
 
 type CrewAssignPageProps = {
   crewMembers: CrewMember[];
@@ -98,7 +99,7 @@ const CrewAssignPage: React.FC<CrewAssignPageProps> = ({ crewMembers }) => {
   if (!activeCarnival) {
     return (
       <div className="flex flex-col items-center">
-        <h1>Please select a carnival from the <a href="/carnivals">Carnivals</a> page.</h1>
+        <h1>Please select a carnival from the <Link href="/carnivals">Carnivals> page.</Link>
       </div>
     );
   }
