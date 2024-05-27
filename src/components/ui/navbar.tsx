@@ -26,7 +26,8 @@ const Navbar: React.FC = () => {
         setCarnivals(data);
 
         // Set the selected carnival from the query parameter if it exists
-        const carnivalIdFromQuery = searchParams.get('carnivalId');
+        const carnivalIdFromQuery = searchParams ? searchParams.get('carnivalId') : null;
+        // const carnivalIdFromQuery = searchParams.get('carnivalId');
         if (carnivalIdFromQuery) {
           setSelectedCarnival(carnivalIdFromQuery);
         }

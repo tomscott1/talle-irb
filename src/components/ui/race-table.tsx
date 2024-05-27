@@ -128,8 +128,8 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
                     </Button>
                   ) : !heat.isCompleted ? (
                     <AssignModal
-                      race={race}
-                      heatId={heat.id}
+                      races={[race]}
+                      heat={heat}
                       crewMembers={crewMembers}
                     />
                   ) : null }

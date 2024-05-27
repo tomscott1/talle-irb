@@ -2,6 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as any).message === 'string'
+  );
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -30,6 +39,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json(races);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    if (isErrorWithMessage(error)) {
+      res.status(500).json({ message: 'Internal server error', error: error.message });
+    } else {
+      res.status(500).json({ message: 'Internal server error', error: 'Unknown error' });
+    }
   }
 }

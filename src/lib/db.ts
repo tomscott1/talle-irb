@@ -1,6 +1,13 @@
 // src/lib/db.ts
 import { prisma } from './prisma';
 
+// define enums as required by typescript
+enum CrewRole {
+  DRIVER = 'DRIVER',
+  CREWIE = 'CREWIE',
+  PATIENT = 'PATIENT',
+}
+
 export async function getCarnivals() {
   return await prisma.carnival.findMany({
     select: {
@@ -100,7 +107,7 @@ export async function getCrewAssignmentsForRace(raceId: number) {
 export async function createOrUpdateCrewAssignment(
   raceId: number,
   crewMemberId: number,
-  role: string,
+  role: CrewRole,
   heat: number
 ) {
   return await prisma.raceCrewAssignment.upsert({
