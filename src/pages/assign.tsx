@@ -2,7 +2,7 @@
 import { GetServerSideProps } from 'next';
 import React from 'react';
 import AssignModal from '@/components/ui/assign-modal';
-import { getCrewMembers } from '@/lib/db';
+import { getCrewMembers, getRacesWithHeats } from '@/lib/db';
 import { CrewMember } from '@prisma/client';
 
 type AssignPageProps = {
@@ -18,7 +18,9 @@ const AssignPage: React.FC<AssignPageProps> = ({ crewMembers }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { carnivalId } = context.query;
+  const racesWithHeats = await getRacesWithHeats(Number(carnivalId));
   const crewMembers = await getCrewMembers(1); // Fetch crew members for the given clubId
   return {
     props: {
