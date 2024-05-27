@@ -1,5 +1,5 @@
 import React from 'react';
-import { Race, Heat } from '@prisma/client';
+import { Race, Heat, CrewMember } from '@prisma/client';
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AssignModal from './assign-modal';
 
 type RaceWithHeats = Race & {
   heats: Heat[];
@@ -20,9 +21,10 @@ type RaceWithHeats = Race & {
 type RaceTableProps = {
   race: RaceWithHeats;
   setRaces: React.Dispatch<React.SetStateAction<RaceWithHeats[]>>;
+  crewMembers: CrewMember[];
 };
 
-const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces }) => {
+const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) => {
   const handleMarkComplete = async (heatId: number) => {
     try {
       const response = await fetch('/api/update-heat', {
@@ -90,6 +92,17 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces }) => {
     }
   };
 
+  const handleAssign = async (heatId: number) => {
+    console.log('assign here')
+    // try {
+    //   const response = await fetch('/api/assign-heat', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify
+  };
+
   const sortedHeats = [...race.heats].sort((a, b) => a.heatNum - b.heatNum); // let's sort the heats by heatNum
 
   return (
@@ -113,6 +126,12 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces }) => {
                     >
                       Mark As Complete
                     </Button>
+                  ) : !heat.isCompleted ? (
+                    <AssignModal
+                      race={race}
+                      heatId={heat.id}
+                      crewMembers={crewMembers}
+                    />
                   ) : null }
                 </TableCell>
               </TableRow>

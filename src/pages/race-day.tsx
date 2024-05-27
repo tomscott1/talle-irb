@@ -1,8 +1,13 @@
 // src/pages/race-day.tsx
 import { GetServerSideProps } from 'next';
 import React, { useState, useEffect } from 'react';
-import { getCarnivalById, getRacesForCarnival, getRacesWithHeats } from '@/lib/db';
-import { Carnival, Race, Heat } from '@prisma/client';
+import {
+    getCarnivalById,
+    getRacesForCarnival,
+    getRacesWithHeats,
+    getCrewMembers,
+} from '@/lib/db';
+import { Carnival, Race, Heat, CrewMember } from '@prisma/client';
 import RaceTable from '@/components/ui/race-table';
 
 // Define RaceWithHeats type locally
@@ -13,15 +18,16 @@ type RaceWithHeats = Race & {
 type RaceDayPageProps = {
   carnival: Carnival;
   racesWithHeats: RaceWithHeats[];
+  crewMembers: CrewMember[];
 };
 
-const RaceDayPage: React.FC<RaceDayPageProps> = ({ carnival, racesWithHeats }) => {
+const RaceDayPage: React.FC<RaceDayPageProps> = ({ carnival, racesWithHeats, crewMembers }) => {
   const [races, setRaces] = useState<RaceWithHeats[]>(racesWithHeats);
 
   const racesWithCurrent = races.map(race => {
     const isCurrent = race.heats.some(heat => heat.isCurrent);
     return { ...race, isCurrent };
-  });
+  }).sort((a, b) => a.order - b.order);
 
   return (
     <div className="flex justify-center">
@@ -35,6 +41,7 @@ const RaceDayPage: React.FC<RaceDayPageProps> = ({ carnival, racesWithHeats }) =
             <RaceTable
               race={race}
               setRaces={setRaces}
+              crewMembers={crewMembers}
             />
           </React.Fragment>
         ))}
@@ -47,6 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { carnivalId } = context.query;
   const carnival = await getCarnivalById(Number(carnivalId));
   const racesWithHeats = await getRacesWithHeats(Number(carnivalId));
+  const crewMembers = await getCrewMembers(1); // Fetch crew members for the given clubId
 
   const serializedCarnival = {
     ...carnival,
@@ -58,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       carnival: serializedCarnival,
       racesWithHeats,
+      crewMembers,
     },
   };
 };

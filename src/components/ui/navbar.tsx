@@ -13,9 +13,9 @@ const Navbar: React.FC = () => {
                 <Link href="/carnivals" className="hover:underline">
                     Carnivals
                 </Link>
-                <Link href="/crew-assign" className="hover:underline">
+                {/* <Link href="/crew-assign" className="hover:underline">
                     Assign Crew
-                </Link>
+                </Link> */}
                 <ModeToggle />
             </div>
         </nav>
