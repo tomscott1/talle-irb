@@ -25,8 +25,9 @@ export async function getCarnivalById(id: number) {
 }
 
 // Fetch all crew members
-export async function getCrewMembers() {
+export async function getCrewMembers(clubId: number) {
   return await prisma.crewMember.findMany({
+    where: { clubId },
     select: {
       id: true,
       name: true,
@@ -49,6 +50,34 @@ export async function getRacesForCarnival(carnivalId: number) {
       currentHeatNum: true,
       round: true,
       isCompleted: true,
+      raceCrewType: true,
+    },
+  });
+}
+
+// get races with corresponding heats
+export async function getRacesWithHeats(carnivalId: number) {
+  return await prisma.race.findMany({
+    where: { carnivalId },
+    select: {
+      id: true,
+      description: true,
+      order: true,
+      goThrough: true,
+      numRaces: true,
+      currentHeatNum: true,
+      round: true,
+      isCompleted: true,
+      raceCrewType: true,
+      heats: {
+        select: {
+          id: true,
+          raceId: true,
+          heatNum: true,
+          isCompleted: true,
+          isCurrent: true,
+        },
+      },
     },
   });
 }

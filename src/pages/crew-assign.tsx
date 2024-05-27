@@ -255,7 +255,7 @@ const CrewAssignPage: React.FC<CrewAssignPageProps> = ({ crewMembers }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const crewMembers = await getCrewMembers();
+  const crewMembers = await getCrewMembers(1); // TODO Change to the clubId
   return {
     props: {
       crewMembers,

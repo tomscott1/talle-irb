@@ -1,6 +1,5 @@
 // src/pages/carnivals.tsx
 import { GetServerSideProps } from 'next';
-import { useCarnivalStore } from '@/store/carnival-store';
 import Link from 'next/link';
 import { getCarnivals } from '@/lib/db';
 import { Carnival } from '@prisma/client';
@@ -18,10 +17,6 @@ type CarnivalsPageProps = {
 };
 
 const CarnivalsPage: React.FC<CarnivalsPageProps> = ({ carnivals }) => {
-  const setActiveCarnival = useCarnivalStore((state) => state.setActiveCarnival);
-  const handleSelectCarnival = (carnival: Carnival) => {
-    setActiveCarnival(carnival);
-  };
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 lg:w-1/2">
@@ -35,12 +30,9 @@ const CarnivalsPage: React.FC<CarnivalsPageProps> = ({ carnivals }) => {
           </TableHeader>
           <TableBody>
             {carnivals.map((carnival) => (
-              <TableRow key={carnival.id}>
+              <TableRow key={carnival.id} className="cursor-pointer">
                 <TableCell className="font-medium">
-                  <Link
-                    onClick={() => handleSelectCarnival(carnival)}
-                    href={`/race-day?carnivalId=${carnival.id}`}
-                  >
+                  <Link href={`/race-day?carnivalId=${carnival.id}`} passHref>
                     {carnival.name}
                   </Link>
                 </TableCell>
@@ -72,6 +64,3 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default CarnivalsPage;
-
-
-

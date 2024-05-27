@@ -38,6 +38,12 @@ enum RaceTeam {
   C
 }
 
+enum RaceCrewType {
+  STANDARD
+  EXTRAPATIENT
+  EXTRACREW
+}
+
 // Define Models
  
 model User {
@@ -45,6 +51,8 @@ model User {
   name      String
   email     String   @unique
   image     String
+  clubId    Int
+  club      Club     @relation(fields: [clubId], references: [id])
   role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -64,6 +72,8 @@ model CrewMember {
   id        Int      @id @default(autoincrement())
   name      String
   isDriver  Boolean
+  clubId    Int
+  club      Club     @relation(fields: [clubId], references: [id])
   photo     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -80,10 +90,12 @@ model Race {
   numRaces   Int
   currentHeatNum Int @default(1)
   round      Round
+  raceCrewType RaceCrewType
   isCompleted Boolean
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
   crewAssignments RaceCrewAssignment[]
+  heats     Heat[]
 }
 
 model RaceCrewAssignment {
@@ -100,3 +112,25 @@ model RaceCrewAssignment {
 
   @@unique([raceId, crewMemberId, role]) // Ensures a crew member can only have one role per race
 }
+
+model Club {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  crewMembers CrewMember[]
+  users      User[]
+}
+
+model Heat {
+  id        Int      @id @default(autoincrement())
+  heatNum   Int
+  result    Int?
+  raceId    Int
+  race      Race       @relation(fields: [raceId], references: [id])
+  isCompleted Boolean @default(false)
+  isCurrent   Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+

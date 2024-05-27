@@ -1,0 +1,16 @@
+-- CreateTable
+CREATE TABLE "Heat" (
+    "id" SERIAL NOT NULL,
+    "heatNum" INTEGER NOT NULL,
+    "result" INTEGER NOT NULL,
+    "raceId" INTEGER NOT NULL,
+    "isCompleted" BOOLEAN NOT NULL DEFAULT false,
+    "isCurrent" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Heat_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Heat" ADD CONSTRAINT "Heat_raceId_fkey" FOREIGN KEY ("raceId") REFERENCES "Race"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
