@@ -37,7 +37,9 @@ const RaceDayPage: React.FC<RaceDayPageProps> = ({ carnival, racesWithHeats, cre
         </div>
         {racesWithCurrent.map((race) => (
           <React.Fragment key={race.id}>
-            {race.round} - {race.description} - {race.isCurrent ? 'In Progress' : 'Coming Up'}
+            <div className="text-center">
+              {race.round} - {race.description} - {race.isCurrent ? 'In Progress' : 'Coming Up'}
+            </div>
             <RaceTable
               race={race}
               setRaces={setRaces}

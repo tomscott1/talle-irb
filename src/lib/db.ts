@@ -97,6 +97,53 @@ export async function getCrewAssignmentsForRace(raceId: number) {
   });
 }
 
+// fetch crew assignemnts for a given raceId/heat
+export async function getSpecificCrewAssignments(raceId: number, heat: number) {
+  return await prisma.raceCrewAssignment.findMany({
+    where: { raceId, heat },
+    select: {
+      id: true,
+      raceId: true,
+      crewMemberId: true,
+      role: true,
+      heat: true,
+    },
+  });
+}
+
+// fetch all crew assignments for a given crew member
+export async function getCrewAssignmentsForCrewMember(crewMemberId: number) {
+  return await prisma.raceCrewAssignment.findMany({
+    where: { crewMemberId },
+    select: {
+      id: true,
+      raceId: true,
+      crewMemberId: true,
+      role: true,
+      heat: true,
+    },
+  });
+}
+
+// fetch all crew assignments
+// TODO: scope this to a club
+export async function getAllCrewAssignments(carnivalId: number) {
+  return await prisma.raceCrewAssignment.findMany({
+    where: {
+      race: {
+        carnivalId
+      }
+    },
+    select: {
+      id: true,
+      raceId: true,
+      crewMemberId: true,
+      role: true,
+      heat: true,
+    },
+  });
+}
+
 // Create or update a crew assignment
 export async function createOrUpdateCrewAssignment(
   raceId: number,

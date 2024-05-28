@@ -61,8 +61,6 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
           });
         });
 
-        toast('Heat marked as complete');
-
         toast.info('Heat marked as complete!', {
             position: "bottom-right",
             autoClose: 2000,
@@ -108,17 +106,28 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
   return (
     <div>
       <Table>
+        <TableHeader className='sr-only'>
+          <TableRow>
+            <TableHead></TableHead>
+            <TableHead></TableHead>
+            <TableHead></TableHead>
+            {/* <TableHead className="w-1/3"></TableHead>
+            <TableHead className="w-1/3"></TableHead>
+            <TableHead className="w-1/3"></TableHead> */}
+          </TableRow>
+        </TableHeader>
         <TableBody>
           {sortedHeats.map((heat, index) => (
             <React.Fragment key={heat.id}>
               <TableRow key={heat.id}>
-                <TableCell>Heat {index + 1} - {race.description}</TableCell>
-                <TableCell>
-                  <Badge variant="secondary">
+                <TableCell className="w-1/3">Heat {index + 1} - {race.description}</TableCell>
+                <TableCell className="w-1/3 text-center">
+                <Badge className={`w-1/8 ${heat.isCurrent ? 'bg-blue-400 text-white' : heat.isCompleted ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  {/* <Badge variant="secondary"> */}
                     {heat.isCurrent ? 'Current' : heat.isCompleted ? 'Completed' : 'Pending'}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex justify-end">
                   {heat.isCurrent ? (
                     <Button
                       variant="secondary"
