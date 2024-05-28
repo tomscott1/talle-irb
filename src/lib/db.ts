@@ -1,12 +1,6 @@
 // src/lib/db.ts
 import { prisma } from './prisma';
-
-// define enums as required by typescript
-enum CrewRole {
-  DRIVER = 'DRIVER',
-  CREWIE = 'CREWIE',
-  PATIENT = 'PATIENT',
-}
+import { CrewRole } from './types/enums';
 
 export async function getCarnivals() {
   return await prisma.carnival.findMany({

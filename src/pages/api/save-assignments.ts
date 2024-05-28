@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { raceId, assignments } = req.body;
+    const { raceId, heat, assignments } = req.body;
 
     try {
       const createAssignments = assignments.map((assignment: any) => 
@@ -12,7 +12,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             raceId,
             crewMemberId: assignment.crewMemberId,
             role: assignment.role,
-            heat: 1, // Assuming heat is always 1 for simplicity
+            heat, // Assuming heat is always 1 for simplicity
+            raceTeam: 'A', // Assuming default team is 'A
           },
         })
       );
