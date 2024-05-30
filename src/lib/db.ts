@@ -131,8 +131,8 @@ export async function getAllCrewAssignments(carnivalId: number) {
   return await prisma.raceCrewAssignment.findMany({
     where: {
       race: {
-        carnivalId
-      }
+        carnivalId,
+      },
     },
     select: {
       id: true,
@@ -168,4 +168,3 @@ export async function createOrUpdateCrewAssignment(
     },
   });
 }
-

@@ -1,11 +1,11 @@
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   // Uses connection pooling
-  url = env("POSTGRES_PRISMA_URL")
+  url       = env("POSTGRES_PRISMA_URL")
   // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
   // or you'll have dangling databases from migrations
   directUrl = env("POSTGRES_URL_NON_POOLING")
@@ -16,6 +16,8 @@ datasource db {
 enum Role {
   USER
   ADMIN
+
+  @@map("role")
 }
 
 enum Round {
@@ -24,113 +26,133 @@ enum Round {
   QUARTERFINAL
   SEMIFINAL
   FINAL
+
+  @@map("round")
 }
 
 enum CrewRole {
   DRIVER
   CREWIE
   PATIENT
+
+  @@map("crew_role")
 }
 
 enum RaceTeam {
   A
   B
   C
+
+  @@map("race_team")
 }
 
 enum RaceCrewType {
   STANDARD
   EXTRAPATIENT
   EXTRACREW
+
+  @@map("race_crew_type")
 }
 
 // Define Models
- 
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   image     String
-  clubId    Int
+  clubId    Int      @map("club_id")
   club      Club     @relation(fields: [clubId], references: [id])
   role      Role
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("user")
 }
 
 model Carnival {
   id        Int      @id @default(autoincrement())
   name      String
-  startDate DateTime   
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
   races     Race[]
+
+  @@map("carnival")
 }
 
 model CrewMember {
-  id        Int      @id @default(autoincrement())
-  name      String
-  isDriver  Boolean
-  clubId    Int
-  club      Club     @relation(fields: [clubId], references: [id])
-  photo     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id              Int                  @id @default(autoincrement())
+  name            String
+  isDriver        Boolean              @map("is_driver")
+  clubId          Int                  @map("club_id")
+  club            Club                 @relation(fields: [clubId], references: [id])
+  photo           String?
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @default(now()) @map("updated_at")
   crewAssignments RaceCrewAssignment[]
+
+  @@map("crew_member")
 }
 
 model Race {
-  id         Int      @id @default(autoincrement())
-  carnivalId Int
-  carnival   Carnival @relation(fields: [carnivalId], references: [id])
-  description String
-  order      Int
-  goThrough  Int
-  numRaces   Int
-  currentHeatNum Int @default(1)
-  round      Round
-  raceCrewType RaceCrewType
-  isCompleted Boolean
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  id              Int                  @id @default(autoincrement())
+  carnivalId      Int                  @map("carnival_id")
+  carnival        Carnival             @relation(fields: [carnivalId], references: [id])
+  description     String
+  order           Int
+  goThrough       Int                  @map("go_through")
+  numRaces        Int                  @map("num_races")
+  currentHeatNum  Int                  @default(1) @map("current_heat_num")
+  round           Round
+  raceCrewType    RaceCrewType         @map("race_crew_type")
+  isCompleted     Boolean              @map("is_completed")
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @default(now()) @map("updated_at")
   crewAssignments RaceCrewAssignment[]
-  heats     Heat[]
+  heats           Heat[]
+
+  @@map("race")
 }
 
 model RaceCrewAssignment {
-  id         Int        @id @default(autoincrement())
-  raceId     Int
-  race       Race       @relation(fields: [raceId], references: [id])
-  crewMemberId Int
-  crewMember CrewMember @relation(fields: [crewMemberId], references: [id])
-  role       CrewRole
-  heat       Int        @default(1)
-  raceTeam   RaceTeam   @default(A)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now())
+  id           Int        @id @default(autoincrement())
+  raceId       Int        @map("race_id")
+  race         Race       @relation(fields: [raceId], references: [id])
+  crewMemberId Int        @map("crew_member_id")
+  crewMember   CrewMember @relation(fields: [crewMemberId], references: [id])
+  role         CrewRole
+  heat         Int        @default(1)
+  raceTeam     RaceTeam   @default(A) @map("race_team")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @default(now()) @map("updated_at")
 
   @@unique([raceId, crewMemberId, role]) // Ensures a crew member can only have one role per race
+  @@map("race_crew_assignment")
 }
 
 model Club {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id          Int          @id @default(autoincrement())
+  name        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @default(now()) @map("updated_at")
   crewMembers CrewMember[]
-  users      User[]
+  users       User[]
+
+  @@map("club")
 }
 
 model Heat {
-  id        Int      @id @default(autoincrement())
-  heatNum   Int
-  result    Int?
-  raceId    Int
-  race      Race       @relation(fields: [raceId], references: [id])
-  isCompleted Boolean @default(false)
-  isCurrent   Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-}
+  id          Int      @id @default(autoincrement())
+  heatNum     Int      @map("heat_num")
+  result      Int?
+  raceId      Int      @map("race_id")
+  race        Race     @relation(fields: [raceId], references: [id])
+  isCompleted Boolean  @default(false) @map("is_completed")
+  isCurrent   Boolean  @default(false) @map("is_current")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 
+  @@map("heat")
+}

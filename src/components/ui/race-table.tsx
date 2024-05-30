@@ -36,6 +36,7 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
       });
 
       if (response.ok) {
+        console.log({response})
         setRaces(prevRaces => {
           return prevRaces.map(r => {
             if (r.id === race.id) {
@@ -61,44 +62,14 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
           });
         });
 
-        toast.info('Heat marked as complete!', {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            // transition: Bounce,
-            });
+        console.log('heat marked as complete')
+
       } else {
-        toast.error('Failed to update heat status', {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            // transition: Bounce,
-            });
+        console.error('Failed to update heat status')
       }
     } catch (error) {
       console.error('Error updating heat status:', error);
     }
-  };
-
-  const handleAssign = async (heatId: number) => {
-    console.log('assign here')
-    // try {
-    //   const response = await fetch('/api/assign-heat', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify
   };
 
   const sortedHeats = [...race.heats].sort((a, b) => a.heatNum - b.heatNum); // let's sort the heats by heatNum
@@ -111,9 +82,6 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
             <TableHead></TableHead>
             <TableHead></TableHead>
             <TableHead></TableHead>
-            {/* <TableHead className="w-1/3"></TableHead>
-            <TableHead className="w-1/3"></TableHead>
-            <TableHead className="w-1/3"></TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -148,7 +116,6 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
           ))}
         </TableBody>
       </Table>
-      <ToastContainer />
     </div>
   );
 };

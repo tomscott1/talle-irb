@@ -6,8 +6,14 @@ import {
     getRacesForCarnival,
     getRacesWithHeats,
     getCrewMembers,
+    getAllCrewAssignments,
 } from '@/lib/db';
-import { Carnival, Race, Heat, CrewMember } from '@prisma/client';
+import {
+  Carnival,
+  Race, Heat,
+  CrewMember,
+  RaceCrewAssignment,
+} from '@prisma/client';
 import RaceTable from '@/components/ui/race-table';
 
 // Define RaceWithHeats type locally
@@ -19,15 +25,23 @@ type RaceDayPageProps = {
   carnival: Carnival;
   racesWithHeats: RaceWithHeats[];
   crewMembers: CrewMember[];
+  assignments: RaceCrewAssignment[];
 };
 
-const RaceDayPage: React.FC<RaceDayPageProps> = ({ carnival, racesWithHeats, crewMembers }) => {
+const RaceDayPage: React.FC<RaceDayPageProps> = ({
+  carnival,
+  racesWithHeats,
+  crewMembers,
+  assignments,
+}) => {
   const [races, setRaces] = useState<RaceWithHeats[]>(racesWithHeats);
 
   const racesWithCurrent = races.map(race => {
     const isCurrent = race.heats.some(heat => heat.isCurrent);
     return { ...race, isCurrent };
   }).sort((a, b) => a.order - b.order);
+
+  console.log({assignments})
 
   return (
     <div className="flex justify-center">
@@ -57,6 +71,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const carnival = await getCarnivalById(Number(carnivalId));
   const racesWithHeats = await getRacesWithHeats(Number(carnivalId));
   const crewMembers = await getCrewMembers(1); // Fetch crew members for the given clubId
+  const assignments = await getAllCrewAssignments(Number(carnivalId));
 
   const serializedCarnival = {
     ...carnival,
@@ -69,6 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       carnival: serializedCarnival,
       racesWithHeats,
       crewMembers,
+      assignments,
     },
   };
 };
