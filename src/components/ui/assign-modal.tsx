@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { CrewMember, Race, Heat } from '@prisma/client'; // Include Heat in the import
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
+  // Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import * as Dialog from '@radix-ui/react-dialog';
 import {
   Select,
   SelectContent,
@@ -37,6 +38,7 @@ const AssignModal: React.FC<AssignModalProps> = ({ heat, races, crewMembers }) =
   const [selectedDriver, setSelectedDriver] = useState<number | null>(null);
   const [selectedCrewie, setSelectedCrewie] = useState<number | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<number | null>(null);
+  const [open, setOpen] = React.useState(false); // handle state of modal
 
   useEffect(() => {
     if (races.length === 1) {
@@ -102,6 +104,7 @@ const AssignModal: React.FC<AssignModalProps> = ({ heat, races, crewMembers }) =
 
       if (response.ok) {
         alert('Assignments saved successfully');
+        setOpen(false); // close modal
       } else {
         alert('Failed to save assignments');
       }
@@ -113,7 +116,8 @@ const AssignModal: React.FC<AssignModalProps> = ({ heat, races, crewMembers }) =
 
 
   return (
-    <Dialog>
+
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Assign Crew</Button>
       </DialogTrigger>
@@ -277,7 +281,7 @@ const AssignModal: React.FC<AssignModalProps> = ({ heat, races, crewMembers }) =
           <Button type="button" onClick={handleSaveAssignments}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </Dialog.Root>
   );
 };
 
