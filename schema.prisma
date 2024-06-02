@@ -104,7 +104,7 @@ model Race {
   order           Int
   goThrough       Int                  @map("go_through")
   numRaces        Int                  @map("num_races")
-  currentHeatNum  Int                  @default(1) @map("current_heat_num")
+  currentHeatNum  Int?                 @map("current_heat_num")
   round           Round
   raceCrewType    RaceCrewType         @map("race_crew_type")
   isCompleted     Boolean              @map("is_completed")

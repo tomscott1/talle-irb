@@ -14,8 +14,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AssignModal from './assign-modal';
 
+type AssignedHeats = {
+  heatNum: number;
+  raceId: number;
+}
+
 type RaceWithHeats = Race & {
   heats: Heat[];
+  assignedHeats: AssignedHeats[];
 };
 
 type RaceTableProps = {
@@ -72,7 +78,27 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
     }
   };
 
+  const isAssigned = (heat: Heat) => {
+    console.log({heat})
+    console.log({race})
+    return race.assignedHeats.some(assignedHeat => assignedHeat.heatNum === heat.heatNum)
+  };
+
+
   const sortedHeats = [...race.heats].sort((a, b) => a.heatNum - b.heatNum); // let's sort the heats by heatNum
+
+  const getHeatStatus = (heat: Heat) => {
+    if (heat.isCurrent) return 'Current';
+    if (heat.isCompleted) return 'Completed';
+  
+    const heatPosition = heat.heatNum - race.currentHeatNum;
+  
+    if (heatPosition === 1) return 'Next Heat';
+    if (heatPosition > 1 && heatPosition <= 10) return `Pending ${heatPosition} Heats`;
+  
+    return 'Pending';
+  };
+
 
   return (
     <div>
@@ -87,12 +113,12 @@ const RaceTable: React.FC<RaceTableProps> = ({ race, setRaces, crewMembers }) =>
         <TableBody>
           {sortedHeats.map((heat, index) => (
             <React.Fragment key={heat.id}>
-              <TableRow key={heat.id}>
+              <TableRow key={heat.id} className={`${isAssigned(heat) ? 'bg-sky-200' : ''}`}>
                 <TableCell className="w-1/3">Heat {index + 1} - {race.description}</TableCell>
                 <TableCell className="w-1/3 text-center">
                 <Badge className={`w-1/8 ${heat.isCurrent ? 'bg-blue-400 text-white' : heat.isCompleted ? 'bg-green-600 text-white' : 'bg-gray-400 text-white'}`}>
                   {/* <Badge variant="secondary"> */}
-                    {heat.isCurrent ? 'Current' : heat.isCompleted ? 'Completed' : 'Pending'}
+                    {getHeatStatus(heat)}
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-end">

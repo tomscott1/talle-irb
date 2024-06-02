@@ -38,10 +38,14 @@ const RaceDayPage: React.FC<RaceDayPageProps> = ({
 
   const racesWithCurrent = races.map(race => {
     const isCurrent = race.heats.some(heat => heat.isCurrent);
-    return { ...race, isCurrent };
+    const assignedHeats = race.heats.map(heat => {
+      const isAssigned = assignments.some(
+        assignment => assignment.raceId === race.id && assignment.heat === heat.heatNum
+      );
+      if(isAssigned) return { ...heat, isAssigned };
+    }).filter(Boolean);
+    return { ...race, isCurrent, assignedHeats };
   }).sort((a, b) => a.order - b.order);
-
-  console.log({assignments})
 
   return (
     <div className="flex justify-center">
